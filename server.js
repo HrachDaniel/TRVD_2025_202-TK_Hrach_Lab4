@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongo');
 const appRoutes = require('./routes/appRoutes');
 const apiRoutes = require('./routes/apiRoutes'); 
 const app = express(); 
+
 const mustache = mustacheExpress();
 mustache.locals = mustache.locals || {};
 mustache.locals.isAdmin = function() {
