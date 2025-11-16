@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{book.title}}</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .preview-content {
+            padding: 20px;
+        }
+
+        .cover-section {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .preview-image {
+            width: 200px; 
+            flex-shrink: 0;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .preview-info {
+            flex-grow: 1;
+        }
+
+        .title-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .title-header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #000;
+        }
+
+        .rating-box {
+            display: flex;
+            align-items: center;
+            background-color: #ff9800;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .rating-box .score {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        .preview-nav {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .preview-nav a {
+            text-decoration: none;
+            color: #777;
+            font-weight: 500;
+            padding-bottom: 5px;
+            transition: color 0.2s;
+        }
+
+        .preview-nav a:hover,
+        .preview-nav a.active {
+            color: #393939; 
+            border-bottom: 2px solid #272526;
+        }
+
+        .description p {
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .tags {
+            margin-top: 15px;
+        }
+
+        .tag-item {
+            display: inline-block;
+            background-color: #ff9800;
+            color: white;
+            padding: 4px 10px;
+            margin: 5px 5px 5px 0;
+            border-radius: 15px;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+
+        .preview-layout {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .main-col {
+            flex: 3;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-col {
+            flex: 1;
+            padding: 20px 0;
+        }
+        
+        .sidebar-block {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-block h4 {
+            margin-top: 0;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .action-button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-read {
+            background-color: #ff9800; 
+            color: white;
+        }
+        
+        .btn-add {
+            background-color: #3498db; 
+            color: white;
+        }
+
+        .details-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .details-list li {
+            padding: 5px 0;
+            border-bottom: 1px dotted #eee;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95em;
+        }
+
+        .details-list li strong {
+            color: #777;
+            font-weight: normal;
+        }
+        .details-list li span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        a {
+            color: #181718
+        }
+
+
+        @media (max-width: 900px) {
+            .preview-layout {
+                flex-direction: column;
+            }
+            .cover-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .title-header {
+                flex-direction: column;
+                gap: 10px;
+                border-bottom: none;
+            }
+            .title-header h1 {
+                font-size: 1.5em;
+            }
+            .preview-nav {
+                justify-content: center;
+            }
+            .preview-image {
+                width: 150px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <span class="header-logo">Library</span>
+            <nav class="main-nav">
+                <a href="/catalog">Каталог</a>
+                <a href="#" id="search-link">Пошук</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <a href="/login" class="btn-login" style="text-decoration: none;">Вхід</a>
+            <a href="/register" class="btn-register" style="text-decoration: none;">Реєстрація</a>
+        </div>
+        
+        <div id="search-modal" class="search-modal">
+            <input type="text" id="main-search-input" class="search-input-main" placeholder="Пошук тайтлів">
+            
+            <div class="search-tabs"></div>
+            <div id="search-results-container"></div>
+            
+            <p class="search-info">Розширений пошук тайтлів знаходиться в каталозі</p>
+        </div>
+    </header>
+
+    <div class="container preview-content">
+        
+        <div class="cover-section">
+            <div class="preview-image">
+                <img src="{{book.image}}" alt="{{book.title}}">
+            </div>
+            <div class="preview-info">
+                <div class="title-header">
+                    <h1>{{book.title}}</h1>
+                    <div class="rating-box">
+                        <span class="score">{{book.score}}</span>
+                    </div>
+                </div>
+                {{#book.bookSeries}}
+                    <div class="collection-link" style="display: flex; align-items: center; margin-top: -10px; margin-bottom: 15px; font-weight: 500;">
+                        <h3 style="margin: 0; font-weight: 500;">
+                            Частина колекції: 
+                            <a href="/collection/{{_id}}">{{title}}</a>
+                        </h3>
+                        <img src="{{coverImage}}" alt="{{title}}" style="width: 40px; height: 60px; object-fit: cover; margin-left: 10px; border-radius: 4px;">
+                    </div>
+                {{/book.bookSeries}}
+                
+                <div class="preview-nav">
+                    <a href="#" class="active">Опис</a>
+                </div>
+                
+                <div class="description">
+                    <p>
+                        {{book.description}}
+                    </p>
+                </div>
+                
+                <div class="tags">
+                    {{#book.tags}}
+                        <a href="#" class="tag-item">{{.}}</a>
+                    {{/book.tags}}
+                </div>
+
+            </div>
+        </div>
+        <div class="preview-layout">
+            
+            <aside class="sidebar-col">
+                <div class="sidebar-block">
+                    <button class="action-button btn-read"><a href="/login" class="action-button btn-read">Читати</a></button>
+                    <button class="action-button btn-add"><a href="/login" class="action-button btn-add">Додати у збережене</a></button>
+                </div>
+                
+                <div class="sidebar-block">
+                    <h4>Деталі</h4>
+                    <ul class="details-list">
+                        <li><strong>Жанр:</strong> <span>{{book.genre}}</span></li>
+                        <li><strong>Дата релізу:</strong> <span>{{book.release}}</span></li>
+                        <li><strong>Автор:</strong> <a href="/login"><span>{{book.author.name}}</span></a></li>
+                    </ul>
+                </div>
+            </aside>
+            
+            <main class="main-col">
+                <h3>Схоже</h3>
+                <div class="section-grid top-updates-grid" style="overflow-x: auto; display: flex; gap: 15px;">
+                {{#similarBooks}}
+                    <a href="/preview/{{_id}}" class="manga-card" style="width: 140px; flex-shrink: 0;">
+                        <img src="{{image}}" alt="{{title}}">
+                        <div class="manga-card-info">
+                            <h4>{{title}}</h4>
+                        </div>
+                    </a>
+                {{/similarBooks}}
+                </div>   
+            </main>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Library. Інформаційний портал</p>
+            <nav class="footer-nav">
+                <a href="#">Контакти</a>
+                <a href="#">Політика конфіденційності</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="/script.js" defer>
+    </script>
+</body>
+</html>

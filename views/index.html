@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library | Головна</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <span class="header-logo">Library</span>
+            <nav class="main-nav">
+                <a href="/catalog">Каталог</a>
+                <a href="#" id="search-link">Пошук</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <a href="/login" class="btn-login" style="text-decoration: none;">Вхід</a>
+            <a href="/register" class="btn-register" style="text-decoration: none;">Реєстрація</a>
+        </div>
+        
+        <div id="search-modal" class="search-modal">
+            <input type="text" id="main-search-input" class="search-input-main" placeholder="Пошук тайтлів">
+            
+            <div class="search-tabs"></div>
+            <div id="search-results-container"></div>
+            
+            <p class="search-info">Розширений пошук тайтлів знаходиться в каталозі</p>
+        </div>
+        </header>
+
+    <div class="container">
+        
+        <h2>Оновлення за сьогодні</h2>
+        <div class="section-grid top-updates-grid">
+
+        {{#newUpdates}}
+        <a href="/preview/{{_id}}" class="manga-card">
+            <img src="{{image}}" alt="{{title}}">
+            <div class="manga-card-info">
+                <h4>{{title}}</h4>
+                <p>{{author.name}}</p>
+            </div>
+        </a>
+        {{/newUpdates}}
+            
+            <a href="#" class="manga-card">
+                <img src="https://via.placeholder.com/150x250/9b59b6/ffffff?text=Книга+2" alt="Книга 2">
+                <div class="manga-card-info">
+                    <h4>Книга 2</h4>
+                    <p>Фантастика</p>
+                </div>
+            </a>
+
+            <a href="/preview" class="manga-card">
+                <img src="https://book24.ua/upload/iblock/0e1/0e1d260914818c00aca1bb76e08c39be.jpg" alt="Книга 1">
+                <div class="manga-card-info">
+                    <h4>Темний</h4>
+                    <p>Роман</p>
+                </div>
+            </a>
+            
+            <a href="#" class="manga-card">
+                <img src="https://via.placeholder.com/150x250/3498db/ffffff?text=Книга+3" alt="Книга 3">
+                <div class="manga-card-info">
+                    <h4>Книга 3</h4>
+                    <p>Детектив</p>
+                </div>
+            </a>
+
+            <a href="#" class="manga-card">
+                <img src="https://via.placeholder.com/150x250/e67e22/ffffff?text=Книга+4" alt="Книга 4">
+                <div class="manga-card-info">
+                    <h4>Книга 4</h4>
+                    <p>Фентезі</p>
+                </div>
+            </a>
+
+            <a href="/preview" class="manga-card">
+                <img src="https://book24.ua/upload/iblock/0e1/0e1d260914818c00aca1bb76e08c39be.jpg" alt="Книга 1">
+                <div class="manga-card-info">
+                    <h4>Темний</h4>
+                    <p>Роман</p>
+                </div>
+            </a>
+
+            <a href="#" class="manga-card">
+                <img src="https://via.placeholder.com/150x250/2ecc71/ffffff?text=Книга+5" alt="Книга 5">
+                <div class="manga-card-info">
+                    <h4>Книга 5</h4>
+                    <p>Трилер</p>
+                </div>
+            </a>
+
+            <a href="#" class="manga-card">
+                <img src="https://via.placeholder.com/150x250/f1c40f/ffffff?text=Книга+6" alt="Книга 6">
+                <div class="manga-card-info">
+                    <h4>Книга 6</h4>
+                    <p>Історичний</p>
+                </div>
+            </a>
+
+            <a href="/preview" class="manga-card">
+                <img src="https://book24.ua/upload/iblock/0e1/0e1d260914818c00aca1bb76e08c39be.jpg" alt="Книга 1">
+                <div class="manga-card-info">
+                    <h4>Темний</h4>
+                    <p>Роман</p>
+                </div>
+            </a>
+            
+            <a href="#" class="manga-card">
+                <img src="https://via.placeholder.com/150x250/8e44ad/ffffff?text=Книга+7" alt="Книга 7">
+                <div class="manga-card-info">
+                    <h4>Книга 7 (New)</h4>
+                    <p>Містика</p>
+                </div>
+            </a>
+
+            <a href="#" class="manga-card">
+                <img src="https://via.placeholder.com/150x250/1abc9c/ffffff?text=Книга+8" alt="Книга 8">
+                <div class="manga-card-info">
+                    <h4>Книга 8 (New)</h4>
+                    <p>Пригоди</p>
+                </div>
+            </a>
+
+            <a href="/preview" class="manga-card">
+                <img src="https://book24.ua/upload/iblock/0e1/0e1d260914818c00aca1bb76e08c39be.jpg" alt="Книга 1">
+                <div class="manga-card-info">
+                    <h4>Темний</h4>
+                    <p>Роман</p>
+                </div>
+            </a>
+            
+        </div>
+        
+        <div class="index-sections">
+            <div class="section-block">
+                <h3>Зараз читають</h3>                 
+                {{#beingRead}}
+                    <a href="/preview/{{_id}}" class="list-item">
+                        <img src="{{image}}" alt="{{title}}">
+                        <div class="list-item-info">
+                            <h4>{{title}}</h4>
+                            <p>{{genre}}</p>
+                        </div>
+                    </a>
+                {{/beingRead}}
+            </div>
+
+            <div class="section-block">
+                <h3>Набирає популярність</h3>
+                
+                {{#trending}}
+                    <a href="/preview/{{_id}}" class="list-item">
+                        <img src="{{image}}" alt="{{title}}">
+                        <div class="list-item-info">
+                            <h4>{{title}}</h4>
+                            <p>{{genre}}</p>
+                        </div>
+                    </a>
+                {{/trending}}
+            </div>
+            
+            <div class="section-block">
+                <h3>Популярне</h3>
+                {{#popular}}
+                    <a href="/preview/{{_id}}" class="list-item">
+                        <img src="{{image}}" alt="{{title}}">
+                        <div class="list-item-info">
+                            <h4>{{title}}</h4>
+                            <p>{{genre}}</p>
+                        </div>
+                    </a>
+                {{/popular}}
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Library. Інформаційний портал</p>
+            <nav class="footer-nav">
+                <a href="#">Контакти</a>
+                <a href="#">Політика конфіденційності</a>
+            </nav>
+        </div>
+    </footer>
+    <script src="/script.js" defer>
+    </script>
+</body>
+</html>
