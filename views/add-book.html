@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Додати нову книгу</title>
+    <style>
+        .admin-form-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .admin-form-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-group-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .form-group-checkbox input {
+            width: auto;
+        }
+        .btn-submit-book {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-submit-book:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <span class="header-logo">Library</span>
+            <nav class="main-nav">
+                <a href="/home">Головна</a>
+                <a href="/home/catalog">Каталог</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            {{#session.user}}
+                <a href="#" id="profile-link" class="btn-login">Профіль</a>
+                <a href="/logout" class="btn-register">Вихід</a>
+            {{/session.user}}
+        </div>
+    </header>
+
+    <aside id="profile-sidebar" class="profile-sidebar">
+        </aside>
+
+    <div class="admin-form-container">
+        <h2>Додавання нової книги</h2>
+        
+        <form action="/admin/add-book" method="POST">
+            
+            <div class="form-group">
+                <label for="title">Назва книги</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="book-id">ID книги (числовий)</label>
+                <input type="number" id="book-id" name="_id" required>
+            </div>
+
+            <div class="form-group">
+                <label for="authorName">Автор</label>
+                <input type="text" id="authorName" name="authorName" list="author-list" placeholder="Введіть або виберіть автора" required>
+                <datalist id="author-list">
+                    {{#authors}}
+                    <option value="{{name}}"></option>
+                    {{/authors}}
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label for="collectionTitle">Серія / Колекція (необов'язково)</label>
+                <input type="text" id="collectionTitle" name="collectionTitle" list="collection-list" placeholder="Введіть або виберіть серію">
+                <datalist id="collection-list">
+                    {{#collections}}
+                    <option value="{{title}}"></option>
+                    {{/collections}}
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label for="genre">Жанр</label>
+                <input type="text" id="genre" name="genre">
+            </div>
+
+            <div class="form-group">
+                <label for="image">URL обкладинки</label>
+                <input type="text" id="image" name="image" placeholder="https://..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Теги (через кому)</label>
+                <input type="text" id="tags" name="tags" placeholder="Історія, Драма, Романтика...">
+            </div>
+
+            <div class="form-group">
+                <label for="release">Дата релізу</label>
+                <input type="text" id="release" name="release" placeholder="2024 р.">
+            </div>
+
+            <div class="form-group">
+                <label for="score">Рейтинг</label>
+                <input type="text" id="score" name="score" placeholder="9.46">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Опис</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Позначки для головної сторінки:</label>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="isNewUpdate" name="isNewUpdate" value="true">
+                    <label for="isNewUpdate">Оновлення за сьогодні</label>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="isBeingRead" name="isBeingRead" value="true">
+                    <label for="isBeingRead">Зараз читають</label>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="isTrending" name="isTrending" value="true">
+                    <label for="isTrending">Набирає популярність</label>
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="isPopular" name="isPopular" value="true">
+                    <label for="isPopular">Популярне</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-book">Додати книгу</button>
+        </form>
+    </div>
+
+    <footer class="footer">
+        </footer>
+    
+    <script src="/script.js" defer></script>
+</body>
+</html>

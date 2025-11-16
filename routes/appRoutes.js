@@ -12,7 +12,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 router.get('/register', (req, res) => {
-    res.render('register.html');
+    return res.render('register.html');
 });
 
 router.post('/register', async (req, res) => {
@@ -31,17 +31,17 @@ router.post('/register', async (req, res) => {
         const user = new User({ login, email, password, age, gender });
         await user.save(); 
         console.log('✅ Користувача успішно збережено в MongoDB!');
-        
-        res.redirect('/login');
+
+        return res.redirect('/login');
 
     } catch (error) {
         console.error('❌ ПОМИЛКА ПРИ ЗБЕРЕЖЕННІ В MONGODB:', error);
-        res.status(500).send('Не вдалося зареєструвати користувача.');
+        return res.status(500).send('Не вдалося зареєструвати користувача.');
     }
 });
 
 router.get('/login', (req, res) => {
-    res.render('login.html');
+    return res.render('login.html');
 });
 
 router.post('/login', async (req, res) => {
@@ -55,13 +55,13 @@ router.post('/login', async (req, res) => {
                 login: user.login,
                 role: user.role
             };
-            res.redirect('/home');
+            return res.redirect('/home');
         } else {
             return res.status(401).send('Неправильний email або пароль.');
         }
     } catch (error) {
         console.error('Помилка входу:', error);
-        res.status(500).send('Помилка сервера під час входу.');
+        return res.status(500).send('Помилка сервера під час входу.');
     }
 });
 
@@ -71,7 +71,7 @@ router.get('/logout', (req, res) => {
             return res.redirect('/home');
         }
         res.clearCookie('connect.sid'); 
-        res.redirect('/');
+        return res.redirect('/');
     });
 });
 
@@ -89,7 +89,7 @@ router.get('/', async (req, res) => {
         const popular = await Book.find({ isPopular: true })
             .populate('author').limit(3);
 
-        res.render('index.html', { 
+        return res.render('index.html', { 
             newUpdates: newUpdates,
             beingRead: beingRead,
             trending: trending,
@@ -98,7 +98,7 @@ router.get('/', async (req, res) => {
 
     } catch (error) {
         console.error('Помилка завантаження книг для головної сторінки:', error);
-        res.status(500).send('Не вдалося завантажити книги.');
+        return res.status(500).send('Не вдалося завантажити книги.');
     }
 });
 
@@ -116,7 +116,7 @@ router.get('/home', isAuthenticated, async (req, res) => {
         const popular = await Book.find({ isPopular: true })
             .populate('author').limit(3);
 
-        res.render('home.html', { 
+        return res.render('home.html', { 
             newUpdates: newUpdates,
             beingRead: beingRead,
             trending: trending,
@@ -125,7 +125,7 @@ router.get('/home', isAuthenticated, async (req, res) => {
 
     } catch (error) {
         console.error('Помилка завантаження книг для головної сторінки:', error);
-        res.status(500).send('Не вдалося завантажити книги.');
+        return res.status(500).send('Не вдалося завантажити книги.');
     }
 });
 
@@ -135,9 +135,9 @@ router.get(['/catalog', '/home/catalog'], async (req, res) => {
             .populate('author')
             .populate('bookSeries');
         const template = req.path.includes('/home') ? 'home.catalog.html' : 'catalog.html';
-        res.render(template, { books });
+        return res.render(template, { books });
     } catch (error) {
-        res.status(500).send('Не вдалося завантажити каталог.');
+        return res.status(500).send('Не вдалося завантажити каталог.');
     }
 });
 
@@ -145,22 +145,24 @@ router.get(['/preview/:id', '/home/preview/:id'], async (req, res) => {
     try {
         const bookId = parseInt(req.params.id, 10);
         const book = await Book.findOne({ _id: bookId }) 
-            .populate('author')  
+            .populate('author')   
             .populate('bookSeries'); 
         
-        if (book) {
-            const template = req.path.includes('/home') ? 'home.preview.html' : 'preview.html';
-            return res.render(template, { book });
-        } else {
+        if (!book) {
             return res.status(404).send('Книгу не знайдено.');
         }
-
+        
         const similarBooks = await Book.find({
-            genre: book.genre,
-            _id: { $ne: book._id } 
-        }).limit(5);
+            genre: book.genre,   
+            _id: { $ne: book._id }   
+        }).limit(5).populate('author'); 
+
         const template = req.path.includes('/home') ? 'home.preview.html' : 'preview.html';
-        res.render(template, { book: book, similarBooks: similarBooks });
+        
+        return res.render(template, { 
+            book: book, 
+            similarBooks: similarBooks 
+        });
 
     } catch (error) {
         console.error("Помилка на маршруті preview:", error);
@@ -176,9 +178,9 @@ router.get('/author/:id', async (req, res) => {
         }
         const books = await Book.find({ author: req.params.id }).populate('bookSeries');
         
-        res.render('author.html', { author: author, books: books });
+        return res.render('author.html', { author: author, books: books });
     } catch (error) {
-        res.status(500).send('Помилка завантаження сторінки автора.');
+        return res.status(500).send('Помилка завантаження сторінки автора.');
     }
 });
 
@@ -190,9 +192,9 @@ router.get('/collection/:id', async (req, res) => {
         }
         const books = await Book.find({ bookSeries: req.params.id }).populate('author');
         
-        res.render('collection.html', { collection: collection, books: books });
+        return res.render('collection.html', { collection: collection, books: books });
     } catch (error) {
-        res.status(500).send('Помилка завантаження сторінки колекції.');
+        return res.status(500).send('Помилка завантаження сторінки колекції.');
     }
 });
 
@@ -210,11 +212,11 @@ router.get('/savage', isAuthenticated, async (req, res) => {
             return res.status(404).send('Користувача не знайдено.');
         }
 
-        res.render('savage.html', { books: user.savedBooks });
+        return res.render('savage.html', { books: user.savedBooks });
 
     } catch (error) {
         console.error("Помилка завантаження збережених книг:", error);
-        res.status(500).send('Не вдалося завантажити збережені книги.');
+        return res.status(500).send('Не вдалося завантажити збережені книги.');
     }
 });
 
@@ -224,9 +226,9 @@ router.post('/save-book', isAuthenticated, async (req, res) => {
         await User.findByIdAndUpdate(req.session.user.id, {
             $addToSet: { savedBooks: bookIdToSave }
         });
-        res.json({ success: true, message: 'Книгу успішно додано до збереженого!' });
+        return res.json({ success: true, message: 'Книгу успішно додано до збереженого!' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Не вдалося зберегти книгу.' });
+        return res.status(500).json({ success: false, message: 'Не вдалося зберегти книгу.' });
     }
 });
 
@@ -236,9 +238,9 @@ router.delete('/saved/delete/:id', isAuthenticated, async (req, res) => {
         await User.findByIdAndUpdate(req.session.user.id, {
             $pull: { savedBooks: bookIdToDelete }
         });
-        res.json({ success: true, message: 'Книгу було успішно вилучено.' });
+        return res.json({ success: true, message: 'Книгу було успішно вилучено.' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Не вдалося вилучити книгу.' });
+        return res.status(500).json({ success: false, message: 'Не вдалося вилучити книгу.' });
     }
 });
 
@@ -247,11 +249,100 @@ router.get('/search', async (req, res) => {
         const query = req.query.q || '';
         const results = await Book.find({ title: { $regex: query, $options: 'i' } })
             .populate('author');
-        res.json(results);
+        return res.json(results);
     } catch (error) {
-        res.status(500).json([]);
+        return res.status(500).json([]);
     }
 });
 
+const { protectAPI, isAdmin } = require('../middleware/authMiddleware');
+router.get(
+    '/admin/add-book', 
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            const authors = await Author.find();
+            const collections = await BookCollection.find();
+            
+            return res.render('add-book.html', { 
+                authors: authors,
+                collections: collections 
+            });
+        } catch (error) {
+            console.error('Помилка завантаження сторінки додавання книги:', error);
+            return res.status(500).send('Помилка сервера.');
+        }
+    }
+);
+
+router.post(
+    '/admin/add-book', 
+    isAuthenticated,
+    async (req, res) => {
+        try {
+            let authorId;
+            const authorName = req.body.authorName.trim(); 
+            let author = await Author.findOne({ name: authorName });
+            
+            if (author) {
+                authorId = author._id;
+            } else {
+                const newAuthor = new Author({ name: authorName });
+                const savedAuthor = await newAuthor.save();
+                authorId = savedAuthor._id;
+                console.log(`Створено нового автора: ${authorName}`);
+            }
+
+            let collectionId = null; 
+            const collectionTitle = req.body.collectionTitle.trim();
+
+            if (collectionTitle) {
+                let collection = await BookCollection.findOne({ title: collectionTitle });
+                
+                if (collection) {
+                    collectionId = collection._id;
+                } else {
+                    const newCollection = new BookCollection({ title: collectionTitle });
+                    const savedCollection = await newCollection.save();
+                    collectionId = savedCollection._id;
+                    console.log(`Створено нову колекцію: ${collectionTitle}`);
+                }
+            }
+
+            const tags = req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [];
+            
+            const newBookData = {
+                _id: req.body._id,
+                title: req.body.title,
+                author: authorId,
+                genre: req.body.genre,
+                image: req.body.image,
+                release: req.body.release,
+                score: req.body.score,
+                description: req.body.description,
+                tags: tags,
+                isNewUpdate: req.body.isNewUpdate === 'true',
+                isBeingRead: req.body.isBeingRead === 'true',
+                isTrending: req.body.isTrending === 'true',
+                isPopular: req.body.isPopular === 'true'
+            };
+
+            if (collectionId) {
+                newBookData.bookSeries = collectionId;
+            }
+
+            const book = new Book(newBookData);
+            await book.save();
+            return res.redirect(`/home/preview/${book._id}`);
+
+        } catch (error) {
+            console.error('Помилка створення книги:', error);
+            if (error.code === 11000) {
+                return res.status(400).send('Помилка: Книга з таким ID вже існує.');
+            }
+            return res.status(500).send('Помилка сервера при створенні книги.');
+        }
+    }
+);
 
 module.exports = router;

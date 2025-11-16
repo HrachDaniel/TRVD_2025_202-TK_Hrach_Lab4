@@ -5,9 +5,8 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const appRoutes = require('./routes/appRoutes');
-
+const apiRoutes = require('./routes/apiRoutes'); 
 const app = express(); 
-
 const mustache = mustacheExpress();
 mustache.locals = mustache.locals || {};
 mustache.locals.isAdmin = function() {
@@ -15,6 +14,9 @@ mustache.locals.isAdmin = function() {
 };
 
 app.engine('html', mustache); 
+app.set('view engine', 'html');
+app.set('views', path.join(__dirname, 'views'));
+
 const port = 3002;
 const MONGO_URI = 'mongodb://localhost:27017/libraryDB';
 
@@ -22,6 +24,9 @@ mongoose.connect(MONGO_URI)
     .then(() => console.log('Успішне підключення до MongoDB'))
     .catch(err => console.error('Помилка підключення до MongoDB:', err));
 
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'a-very-strong-secret-key-that-is-hard-to-guess', 
     resave: false,
@@ -34,13 +39,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.engine('html', mustacheExpress());
-app.set('view engine', 'html');
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use('/', appRoutes);
+app.use('/api', apiRoutes);
 app.listen(port, () => {
     console.log(`Сервер успішно запущено на http://localhost:${port}`);
 });
