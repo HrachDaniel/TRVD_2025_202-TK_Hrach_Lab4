@@ -11,7 +11,7 @@ const app = express();
 const mustache = mustacheExpress();
 mustache.locals = mustache.locals || {};
 mustache.locals.isAdmin = function() {
-    return this.session && this.session.user && this.session.user.role === 'admin';
+    return this.session && this.session.user && this.session.user.role && this.session.user.role.toLowerCase() === 'admin';
 };
 
 app.engine('html', mustache); 
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', appRoutes);
-app.use('/api', apiRoutes);
+app.use('/api', apiRoutes); 
 app.listen(port, () => {
     console.log(`Сервер успішно запущено на http://localhost:${port}`);
 });

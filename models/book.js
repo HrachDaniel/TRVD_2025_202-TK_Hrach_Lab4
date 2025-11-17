@@ -19,7 +19,7 @@ const bookSchema = new mongoose.Schema({
     score: { type: String, required: true },
     description: { type: String },
 
-    isNaeUpdate: { type: Boolean, default: false },
+    isNewUpdate: { type: Boolean, default: false },
     isBeingRead: { type: Boolean, default: false },
     isTrending: { type: Boolean, default: false },  
     isPopular: { type: Boolean, default: false }

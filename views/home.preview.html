@@ -223,7 +223,9 @@
         <nav class="sidebar-nav">
             <a href="#">📖 Прочитане</a>
             <a href="/savage">⭐ Збережене</a>
-            <a href="/add-book">+📙 Додати книгу</a>
+            {{#isAdmin}}
+            <a href="/admin/add-book">📙 Додати книгу</a>
+            {{/isAdmin}}
             <a href="/">🚪 Вихід</a>
         </nav>
         

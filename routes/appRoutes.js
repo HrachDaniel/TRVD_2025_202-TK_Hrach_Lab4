@@ -4,6 +4,12 @@ const User = require('../models/user');
 const Book = require('../models/book');
 const Author = require('../models/author');
 const BookCollection = require('../models/bookCollection');
+const isAdmin = (req, res, next) => {
+    if (req.session.user && req.session.user.role && req.session.user.role.toLowerCase() === 'admin') {
+        return next();
+    }
+    return res.status(403).send('Доступ заборонено. Потрібні права адміністратора.');
+};
 const isAuthenticated = (req, res, next) => {
     if (req.session.user) {
         return next(); 
@@ -255,10 +261,10 @@ router.get('/search', async (req, res) => {
     }
 });
 
-const { protectAPI, isAdmin } = require('../middleware/authMiddleware');
 router.get(
     '/admin/add-book', 
     isAuthenticated,
+    isAdmin,
     async (req, res) => {
         try {
             const authors = await Author.find();
@@ -278,6 +284,7 @@ router.get(
 router.post(
     '/admin/add-book', 
     isAuthenticated,
+    isAdmin,
     async (req, res) => {
         try {
             let authorId;
