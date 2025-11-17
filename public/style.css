@@ -558,6 +558,9 @@ body.dark-theme .sidebar-block,
 body.dark-theme .profile-sidebar,
 body.dark-theme .catalog-sidebar,
 body.dark-theme .main-col,
+body.dark-theme .admin-table-container,
+body.dark-theme .admin-table th,
+body.dark-theme .admin-form-container,
 body.dark-theme {
     background-color: #444;
     border-color: #555;

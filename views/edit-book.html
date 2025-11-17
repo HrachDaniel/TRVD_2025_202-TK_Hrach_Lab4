@@ -94,6 +94,7 @@
             <a href="#">📖 Прочитане</a>
             <a href="/savage">⭐ Збережене</a>
             {{#isAdmin}}
+            <a href="/admin/add-book">+📙 Додати книгу</a>
             <a href="/admin/manage-books">⚙️ Керувати книгами</a>
             {{/isAdmin}}
             <a href="/logout">🚪 Вихід</a>
@@ -108,24 +109,27 @@
         </div>
     </aside>
 
+    <aside id="profile-sidebar" class="profile-sidebar">
+        </aside>
+
     <div class="admin-form-container">
-        <h2>Додавання нової книги</h2>
+        <h2>Редагування книги: {{book.title}}</h2>
         
-        <form action="/admin/add-book" method="POST">
-            
-            <div class="form-group">
-                <label for="title">Назва книги</label>
-                <input type="text" id="title" name="title" required>
-            </div>
+        <form action="/admin/edit-book/{{book._id}}" method="POST">
             
             <div class="form-group">
                 <label for="book-id">ID книги (числовий)</label>
-                <input type="number" id="book-id" name="_id" required>
+                <input type="number" id="book-id" name="_id" value="{{book._id}}" readonly>
             </div>
 
             <div class="form-group">
+                <label for="title">Назва книги</label>
+                <input type="text" id="title" name="title" value="{{book.title}}" required>
+            </div>
+            
+            <div class="form-group">
                 <label for="authorName">Автор</label>
-                <input type="text" id="authorName" name="authorName" list="author-list" placeholder="Введіть або виберіть автора" required>
+                <input type="text" id="authorName" name="authorName" list="author-list" value="{{book.author.name}}" required>
                 <datalist id="author-list">
                     {{#authors}}
                     <option value="{{name}}"></option>
@@ -134,8 +138,8 @@
             </div>
 
             <div class="form-group">
-                <label for="collectionTitle">Серія / Колекція (необов'язково)</label>
-                <input type="text" id="collectionTitle" name="collectionTitle" list="collection-list" placeholder="Введіть або виберіть серію">
+                <label for="collectionTitle">Серія / Колекція</label>
+                <input type="text" id="collectionTitle" name="collectionTitle" list="collection-list" value="{{#book.bookSeries}}{{title}}{{/book.bookSeries}}">
                 <datalist id="collection-list">
                     {{#collections}}
                     <option value="{{title}}"></option>
@@ -145,61 +149,58 @@
 
             <div class="form-group">
                 <label for="genre">Жанр</label>
-                <input type="text" id="genre" name="genre">
+                <input type="text" id="genre" name="genre" value="{{book.genre}}">
             </div>
 
             <div class="form-group">
                 <label for="image">URL обкладинки</label>
-                <input type="text" id="image" name="image" placeholder="https://..." required>
+                <input type="text" id="image" name="image" value="{{book.image}}" required>
             </div>
 
             <div class="form-group">
                 <label for="tags">Теги (через кому)</label>
-                <input type="text" id="tags" name="tags" placeholder="Історія, Драма, Романтика...">
+                <input type="text" id="tags" name="tags" value="{{book.tags}}">
             </div>
 
             <div class="form-group">
                 <label for="release">Дата релізу</label>
-                <input type="text" id="release" name="release" placeholder="2024 р.">
+                <input type="text" id="release" name="release" value="{{book.release}}">
             </div>
 
             <div class="form-group">
                 <label for="score">Рейтинг</label>
-                <input type="text" id="score" name="score" placeholder="9.46">
+                <input type="text" id="score" name="score" value="{{book.score}}">
             </div>
 
             <div class="form-group">
                 <label for="description">Опис</label>
-                <textarea id="description" name="description"></textarea>
+                <textarea id="description" name="description">{{book.description}}</textarea>
             </div>
 
             <div class="form-group">
                 <label>Позначки для головної сторінки:</label>
                 <div class="form-group-checkbox">
-                    <input type="checkbox" id="isNewUpdate" name="isNewUpdate" value="true">
+                    <input type="checkbox" id="isNewUpdate" name="isNewUpdate" value="true" {{#book.isNewUpdate}}checked{{/book.isNewUpdate}}>
                     <label for="isNewUpdate">Оновлення за сьогодні</label>
                 </div>
-                <div class="form-group-checkbox">
-                    <input type="checkbox" id="isBeingRead" name="isBeingRead" value="true">
+                 <div class="form-group-checkbox">
+                    <input type="checkbox" id="isBeingRead" name="isBeingRead" value="true" {{#book.isBeingRead}}checked{{/book.isBeingRead}}>
                     <label for="isBeingRead">Зараз читають</label>
                 </div>
                 <div class="form-group-checkbox">
-                    <input type="checkbox" id="isTrending" name="isTrending" value="true">
+                    <input type="checkbox" id="isTrending" name="isTrending" value="true" {{#book.isTrending}}checked{{/book.isTrending}}>
                     <label for="isTrending">Набирає популярність</label>
                 </div>
                 <div class="form-group-checkbox">
-                    <input type="checkbox" id="isPopular" name="isPopular" value="true">
+                    <input type="checkbox" id="isPopular" name="isPopular" value="true" {{#book.isPopular}}checked{{/book.isPopular}}>
                     <label for="isPopular">Популярне</label>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit-book">Додати книгу</button>
+            <button type="submit" class="btn-submit-book">Оновити книгу</button>
         </form>
     </div>
 
-    <footer class="footer">
-        </footer>
-    
     <script src="/script.js" defer></script>
 </body>
 </html>

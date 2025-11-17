@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Керування книгами</title>
+    <style>
+        .admin-table-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .admin-table th,
+        .admin-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .admin-table th {
+            background-color: #f9f9f9;
+        }
+        .admin-table img {
+            width: 50px;
+            height: auto;
+        }
+        .admin-table .action-btn {
+            display: inline-block;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+        }
+        .btn-edit { background-color: #3498db; }
+        .btn-delete {
+            background-color: #e74c3c;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+            <span class="header-logo">Library</span>
+            <nav class="main-nav">
+                <a href="/home">Головна</a>
+                <a href="/home/catalog">Каталог</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            {{#session.user}}
+                <a href="#" id="profile-link" class="btn-login">Профіль</a>
+            {{/session.user}}
+        </div>
+    </header>
+
+    <aside id="profile-sidebar" class="profile-sidebar">
+        <div class="sidebar-header">
+            <h3>Профіль: {{session.user.login}}</h3>
+            <button class="sidebar-close" id="sidebar-close">&times;</button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#">📖 Прочитане</a>
+            <a href="/savage">⭐ Збережене</a>
+            {{#isAdmin}}
+            <a href="/admin/add-book">+📙 Додати книгу</a>
+            {{/isAdmin}}
+            <a href="/logout">🚪 Вихід</a>
+        </nav>
+        
+        <div class="theme-switch-block">
+            <span>Темне оформлення</span>
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </aside>
+
+    <aside id="profile-sidebar" class="profile-sidebar">
+        </aside>
+
+    <div class="admin-table-container">
+        <h2>Керування книгами</h2>
+        
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Обкладинка</th>
+                    <th>Назва</th>
+                    <th>Автор</th>
+                    <th>Редагувати</th>
+                    <th>Видалити</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#books}}
+                <tr>
+                    <td>{{_id}}</td>
+                    <td><img src="{{image}}" alt="{{title}}"></td>
+                    <td>{{title}}</td>
+                    <td>{{author.name}}</td>
+                    <td>
+                        <a href="/admin/edit-book/{{_id}}" class="action-btn btn-edit">Редагувати</a>
+                    </td>
+                    <td>
+                        <form action="/admin/delete-book/{{_id}}" method="POST" onsubmit="return confirm('Ви впевнені, що хочете видалити цю книгу?');">
+                            <button type="submit" class="action-btn btn-delete">Видалити</button>
+                        </form>
+                    </td>
+                </tr>
+                {{/books}}
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="footer">
+        </footer>
+    
+    <script src="/script.js" defer></script>
+</body>
+</html>

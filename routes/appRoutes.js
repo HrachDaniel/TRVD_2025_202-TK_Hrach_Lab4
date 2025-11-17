@@ -352,4 +352,116 @@ router.post(
     }
 );
 
+router.get(
+    '/admin/manage-books',
+    isAuthenticated,
+    isAdmin,
+    async (req, res) => {
+        try {
+            const books = await Book.find({}).populate('author');
+            return res.render('manage-books.html', { books: books });
+        } catch (error) {
+            return res.status(500).send('Помилка завантаження списку книг.');
+        }
+    }
+);
+
+router.get(
+    '/admin/edit-book/:id',
+    isAuthenticated,
+    isAdmin,
+    async (req, res) => {
+        try {
+            const book = await Book.findOne({ _id: req.params.id })
+                                    .populate('author')
+                                    .populate('bookSeries');
+            
+            if (!book) {
+                return res.status(404).send('Книгу не знайдено.');
+            }
+
+            const authors = await Author.find();
+            const collections = await BookCollection.find();
+
+            return res.render('edit-book.html', {
+                book: book,
+                authors: authors,
+                collections: collections
+            });
+        } catch (error) {
+            return res.status(500).send('Помилка завантаження книги.');
+        }
+    }
+);
+
+router.post(
+    '/admin/edit-book/:id',
+    isAuthenticated,
+    isAdmin,
+    async (req, res) => {
+        try {
+            const bookId = req.params.id;
+            const book = await Book.findOne({ _id: bookId });
+
+            if (!book) {
+                return res.status(404).send('Книгу не знайдено.');
+            }
+            let authorId;
+            const authorName = req.body.authorName.trim();
+            let author = await Author.findOne({ name: authorName });
+            if (!author) {
+                author = new Author({ name: authorName });
+                await author.save();
+            }
+            authorId = author._id;
+            let collectionId = null;
+            const collectionTitle = req.body.collectionTitle.trim();
+            if (collectionTitle) {
+                let collection = await BookCollection.findOne({ title: collectionTitle });
+                if (!collection) {
+                    collection = new BookCollection({ title: collectionTitle });
+                    await collection.save();
+                }
+                collectionId = collection._id;
+            }
+
+            book.title = req.body.title;
+            book.author = authorId;
+            book.bookSeries = collectionId;
+            book.genre = req.body.genre;
+            book.image = req.body.image;
+            book.release = req.body.release;
+            book.score = req.body.score;
+            book.description = req.body.description;
+            book.tags = req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [];
+            book.isNewUpdate = req.body.isNewUpdate === 'true';
+            book.isBeingRead = req.body.isBeingRead === 'true';
+            book.isTrending = req.body.isTrending === 'true';
+            book.isPopular = req.body.isPopular === 'true';
+            
+            await book.save();
+            return res.redirect('/admin/manage-books');
+
+        } catch (error) {
+            console.error('Помилка оновлення книги:', error);
+            return res.status(500).send('Помилка сервера при оновленні книги.');
+        }
+    }
+);
+
+router.post(
+    '/admin/delete-book/:id',
+    isAuthenticated,
+    isAdmin,
+    async (req, res) => {
+        try {
+            const bookId = req.params.id;
+            await Book.deleteOne({ _id: bookId });
+            return res.redirect('/admin/manage-books');
+        } catch (error) {
+            return res.status(500).send('Помилка видалення книги.');
+        }
+    }
+);
+
 module.exports = router;

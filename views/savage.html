@@ -28,11 +28,11 @@
         
         <nav class="sidebar-nav">
             <a href="#">📖 Прочитане</a>
-            <a href="#">⭐ Збережене</a>
             {{#isAdmin}}
             <a href="/admin/add-book">📙 Додати книгу</a>
+            <a href="/admin/manage-books">⚙️ Керувати книгами</a>
             {{/isAdmin}}
-            <a href="/">🚪 Вихід</a>
+            <a href="/logout">🚪 Вихід</a>
         </nav>
         
         <div class="theme-switch-block">
@@ -53,7 +53,7 @@
 
             {{#books}}
                 <div class="manga-card">
-                    <a href="/preview/{{_id}}">
+                    <a href="/home/preview/{{_id}}">
                         <img src="{{image}}" alt="{{title}}">
                     </a>
                     <div class="manga-card-info">
