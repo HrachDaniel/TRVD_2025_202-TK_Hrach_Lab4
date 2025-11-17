@@ -36,11 +36,11 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
-    res.locals.session = req.session;
-    if (req.session.user && req.session.user.role && req.session.user.role.toLowerCase() === 'admin') {
-        res.locals.isAdmin = true;
-    }
-    next();
+    res.locals.session = req.session;
+    if (req.session.user && req.session.user.role && req.session.user.role.toLowerCase() === 'admin') {
+        res.locals.isAdmin = true;
+    }
+    next();
 });
 
 app.use('/', appRoutes);
